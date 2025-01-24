@@ -1,6 +1,9 @@
 <template>
   <div class="base-layout">
-    <div class="base-layout-top">🥄오늘의 요리</div>
+    <div class="base-layout-top">
+      <i class="fa-solid fa-utensils me-2"></i>
+      오늘의 요리
+    </div>
     <div class="base-layout-container">
       <CardTemplate>
         <h3 class="mb-3 fw-bold">냉장고 재료</h3>
