@@ -1,5 +1,11 @@
 @use './color' as *;
 
+@mixin flex-basic {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
 @mixin flex-center {
   display: flex;
   align-items: center;

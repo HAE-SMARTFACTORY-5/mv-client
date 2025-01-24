@@ -1,188 +1,257 @@
 <template>
   <div class="recipe-detail">
-    <div class="recipe-detail-header">
-      <div class="recipe-detail-back" @click="goBack">
-        <span>←</span>
+    <header class="recipe-detail__header">
+      <button
+        class="recipe-detail__back-btn"
+        @click="goBack"
+        aria-label="뒤로 가기"
+      >
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+      <h1 class="recipe-detail__heading">
+        {{ recipeStore.currentRecipe?.name }}
+      </h1>
+    </header>
+
+    <main class="recipe-detail__content">
+      <div class="recipe-detail__image-wrapper">
+        <img
+          src="@assets/images/chicken_omlet.jpg"
+          alt="닭가슴살 오믈렛 이미지"
+          loading="lazy"
+          class="recipe-detail__image"
+        />
       </div>
-      <span class="mx-2">닭가슴살 오믈렛</span>
-    </div>
-
-    <div class="recipe-detail-content">
+      <!-- 요리 정보 -->
       <CardTemplate>
-        <div class="d-flex align-items-center justify-content-between w-100">
-          <span>⏰조리시간: 20분 </span>
-          <span> 난이도: 쉬움</span>
-        </div>
-      </CardTemplate>
-
-      <CardTemplate>
-        <h3 class="mb-3 fw-bold">재료</h3>
-        <div class="ingredient">
-          <CategoryCard v-for="(ingredient, index) in ingredients" :key="index">
-            <div class="category-layout">
-              <div class="category-layout-icon">{{ ingredient.icon }}</div>
-              <span class="category-layout-text--title">{{
-                ingredient.name
-              }}</span>
-            </div>
-          </CategoryCard>
-        </div>
-      </CardTemplate>
-
-      <CardTemplate>
-        <div class="recipe-card-header">
-          <h3 class="mb-3 fw-bold">조리 순서</h3>
-          <!-- <span class="recipe-card-header-link">전체보기>></span> -->
-        </div>
-        <div class="recipe">
-          <CategoryCard
-            v-for="(step, index) in cookingSteps"
-            :key="index"
-            class="recipe-category-card"
+        <div class="recipe-info">
+          <span class="recipe-info__item"
+            >⏰조리시간: {{ recipeStore.currentRecipe?.time }}</span
           >
-            <div>
-              <div class="category-layout">{{ index + 1 }}. {{ step }}</div>
+          <span class="recipe-info__item"
+            >난이도: {{ recipeStore.currentRecipe?.level }}</span
+          >
+        </div>
+      </CardTemplate>
+
+      <!-- 재료 섹션 -->
+      <CardTemplate>
+        <h2 class="section-title">재료</h2>
+        <div class="ingredients">
+          <CategoryCard
+            v-for="ingredient in recipeStore.ingredients"
+            :key="ingredient.id"
+          >
+            <div class="ingredients__item">
+              <div class="ingredients__icon">{{ ingredient.icon }}</div>
+              <span>{{ ingredient.name }}</span>
             </div>
           </CategoryCard>
         </div>
       </CardTemplate>
-    </div>
+
+      <!-- 조리 순서 섹션 -->
+      <CardTemplate>
+        <h2 class="section-title">조리 순서</h2>
+        <div class="cooking-steps">
+          <CategoryCard
+            v-for="(step, index) in recipeStore.cookingSteps"
+            :key="step.id"
+          >
+            <div class="cooking-steps__item">
+              <span class="cooking-steps__number">{{ index + 1 }}.</span>
+              <span class="cooking-steps__text">{{ step.text }}</span>
+            </div>
+          </CategoryCard>
+        </div>
+      </CardTemplate>
+    </main>
   </div>
 </template>
 
 <script setup>
+import { onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
+import { useRecipeStore } from '@stores/recipeStore';
 import CardTemplate from '@components/templates/CardTemplate.vue';
 import CategoryCard from '@components/molecules/CategoryCard.vue';
-import { useRouter } from 'vue-router';
 
+const route = useRoute();
 const router = useRouter();
+const recipeStore = useRecipeStore();
 
 const goBack = () => {
   router.back();
 };
 
-const ingredients = [
-  { icon: '🥚', name: '계란' },
-  { icon: '🍗', name: '닭가슴살' },
-  { icon: '🧅', name: '양파' },
-  { icon: '🧂', name: '소금' },
-  { icon: '🌶️', name: '후추' },
-];
-
-const cookingSteps = [
-  '닭가슴살을 잘게 다집니다.',
-  '달걀을 다져 봅니다.',
-  '계란을 풀어 닭가슴살과 양파와 섞습니다.',
-  '팬에 기름을 두르고 오믈렛을 만듭니다.',
-];
+onMounted(async () => {
+  await recipeStore.fetchRecipes();
+  const recipeName = route.params.id;
+  recipeStore.setCurrentRecipe(recipeName);
+});
 </script>
 
 <style lang="scss" scoped>
+// 변수 정의
+$header-height: 60px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$border-radius-lg: 16px;
+$border-radius-sm: 8px;
+
+// 레시피 상세 페이지 컨테이너
 .recipe-detail {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  min-height: 100vh;
   width: 100%;
   background-color: $color-white-000;
+  font-family: 'Noto Sans KR', sans-serif;
 
-  &-header {
+  &__header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     display: flex;
     align-items: center;
-    padding: 0 16px;
+    height: $header-height;
+    padding: 0 $spacing-md;
+    background-color: $color-blue-500;
+    color: $color-white-000;
+    z-index: 2;
+  }
 
+  &__back-btn {
+    background: none;
+    border: none;
     color: $color-white-000;
     font-size: 24px;
-    font-weight: 700;
-    font-family: 'Noto Sans KR';
+    cursor: pointer;
+    padding: 0;
+    margin-right: $spacing-md;
+    transition: opacity 0.2s ease;
+    font-family: 'Noto Sans KR', sans-serif;
 
-    width: 100%;
-    height: 60px;
-    background-color: $color-blue-500;
-
-    h2 {
-      margin: 0;
-      margin-left: 16px;
+    &:hover {
+      opacity: 0.8;
     }
   }
 
-  &-back {
-    cursor: pointer;
+  &__heading {
     font-size: 24px;
+    font-weight: 700;
+    margin: 0;
   }
 
-  &-content {
-    padding: 16px;
+  &__content {
+    position: relative;
+    margin-top: $header-height;
+    padding: $spacing-md;
+    background-color: rgba($color-white-000, 0.9);
+    min-height: calc(100vh - #{$header-height});
+  }
+
+  &__image-wrapper {
+    position: relative;
+    width: 100%;
+    height: 30vh;
+    margin: 0 auto $spacing-md;
+    border-radius: $border-radius-lg;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__image {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: $border-radius-lg;
+    box-shadow: 0 4px 6px rgba($color-black-700, 0.1);
   }
 }
 
-.recipe-category-card {
-  min-width: 100%;
-  background-color: $color-white-000;
-  flex-direction: row;
+// 레시피 정보 컴포넌트
+.recipe-info {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  width: 100%;
+  color: $color-gray-700;
+  font-size: 0.95rem;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+  }
 }
 
-.recipe {
+// 섹션 제목
+.section-title {
+  margin-bottom: 1rem;
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: $color-black-700;
+}
+
+// 재료 목록
+.ingredients {
+  display: flex;
+  width: 100%;
+  gap: $spacing-sm;
+  padding: calc($spacing-sm / 2);
+  overflow-x: auto;
+  @include scrollbar;
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+  }
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    font-size: 30px;
+    border-radius: $border-radius-sm;
+  }
+}
+
+// 조리 순서
+.cooking-steps {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  justify-content: flex-start;
-  overflow-x: hidden;
-  overflow-y: auto;
+  width: 100%;
+  gap: $spacing-sm;
+  padding: calc($spacing-sm / 2);
   max-height: 300px;
-  width: 100%;
-  gap: 8px;
-  padding: 4px;
+  overflow-y: auto;
+  overflow-x: hidden;
   @include scrollbar;
-}
 
-.ingredient {
-  display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: flex-start;
-  overflow-x: auto;
-  width: 100%;
-  gap: 8px;
-  padding: 4px;
-  @include scrollbar;
-}
-
-.category-layout {
-  @include category-layout;
-}
-
-.recipe-info {
-  &-meta {
-    color: $color-gray-500;
-    font-size: 0.9em;
+  &__item {
+    display: flex;
+    align-items: flex-start;
+    gap: $spacing-sm;
   }
-}
 
-.recipe-section {
-  margin-bottom: 24px;
-
-  h4 {
-    color: $color-blue-700;
-    margin-bottom: 12px;
+  &__number {
+    font-weight: 600;
+    color: $color-gray-700;
+    min-width: 24px;
   }
-}
 
-.ingredient-list {
-  list-style: none;
-  padding: 0;
-
-  li {
-    padding: 8px 0;
-    border-bottom: 1px solid $color-gray-200;
-  }
-}
-
-.cooking-steps {
-  padding-left: 20px;
-
-  li {
-    margin-bottom: 12px;
+  &__text {
+    color: $color-gray-900;
     line-height: 1.5;
   }
 }
