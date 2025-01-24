@@ -1,0 +1,45 @@
+@use './font' as *;
+@use './color' as *;
+@use './mixin' as *;
+
+:root {
+  // 기본 폰트 설정
+  font-family: 'Noto Sans KR', Inter, system-ui, Avenir, Helvetica, Arial,
+    sans-serif;
+  font-optical-sizing: auto;
+  line-height: 1.5;
+  font-weight: 400;
+  font-style: normal;
+
+  // 라이트 모드 기본값
+  color-scheme: light dark;
+  color: $color-black-700;
+  background-color: $color-white-000;
+
+  // 폰트 렌더링 최적화
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// 다크모드 설정
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: $color-white-000;
+    background-color: $color-black-800;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
