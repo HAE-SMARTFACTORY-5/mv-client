@@ -2,7 +2,7 @@
   <BasicTemplate>
     <div class="main-container">
       <h2 class="main-title">vue-js basic page</h2>
-      <div class="content-area">메인 컨텐츠</div>
+      <div class="content-area">메인 컨텐츠 test</div>
     </div>
   </BasicTemplate>
 </template>
