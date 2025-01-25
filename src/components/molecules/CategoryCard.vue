@@ -16,7 +16,5 @@
   margin-bottom: 8px;
   margin-right: 8px;
   padding: 16px;
-
-  min-width: 160px;
 }
 </style>

@@ -1,10 +1,12 @@
 <template>
   <div class="base-layout">
+    <!-- 헤더 -->
     <header class="base-layout__header">
       <i class="fa-solid fa-utensils me-2"></i>
       오늘의 요리
     </header>
 
+    <!-- 메인 컨테이너 -->
     <main class="base-layout__container">
       <div class="storage-tabs">
         <button
@@ -22,9 +24,9 @@
           냉동실
         </button>
       </div>
+
       <!-- 냉장고 재료 섹션 -->
       <CardTemplate class="storage-section">
-        <!-- <h3 class="title">냉장고 재료</h3> -->
         <div class="ingredients">
           <CategoryCard
             v-for="(ingredient, index) in currentIngredients"
@@ -43,14 +45,12 @@
       </CardTemplate>
 
       <!-- 추천 레시피 섹션 -->
-
       <CardTemplate class="recipe-section">
         <div class="section-header">
           <h2 class="section-title">
             <i class="fa-solid fa-star me-2"></i>
             추천 레시피
           </h2>
-          <!-- <span class="section-header__link">전체보기>></span> -->
         </div>
         <div class="recipes-list">
           <CategoryCard
@@ -86,35 +86,34 @@ import CategoryCard from '@components/molecules/CategoryCard.vue';
 import { useRouter } from 'vue-router';
 import { ref, computed, onMounted } from 'vue';
 import { useRecipeStore } from '@stores/recipeStore';
+import { useFridgeStore } from '@stores/fridgeStore';
 
 const router = useRouter();
 const recipeStore = useRecipeStore();
+const fridgeStore = useFridgeStore();
 const activeStorage = ref('fridge');
 
-const fridgeIngredients = [
-  { icon: '🥚', name: '계란', count: '3개' },
-  { icon: '🥬', name: '양상추', count: '1개' },
-  { icon: '🥕', name: '당근', count: '2개' },
-];
-
+// 백엔드에서 냉동고 API 추가 후 삭제
 const freezerIngredients = [
   { icon: '🍗', name: '닭가슴살', count: '2개' },
   { icon: '🐟', name: '고등어', count: '1마리' },
   { icon: '🥩', name: '돼지고기', count: '300g' },
 ];
 
+// 반응형 정의
 const currentIngredients = computed(() => {
   return activeStorage.value === 'fridge'
-    ? fridgeIngredients
+    ? fridgeStore.ingredients
     : freezerIngredients;
 });
 
-onMounted(async () => {
-  await recipeStore.fetchRecipes();
-});
+const recipes = computed(() => recipeStore.recipeList);
 
-// recipes를 store에서 가져오도록 변경
-const recipes = computed(() => recipeStore.recipes);
+// 데이터 로드
+onMounted(async () => {
+  await fridgeStore.getFridgeIngredients();
+  await recipeStore.getRecipes();
+});
 </script>
 
 <style lang="scss" scoped>

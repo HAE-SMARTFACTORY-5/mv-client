@@ -1,17 +1,18 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import { getRecipeIcon, getIngredientIcon } from '@/utils/iconMaps';
+import axios from 'axios';
+import { API_BASE_URL } from '@config';
 
 export const useRecipeStore = defineStore('recipe', () => {
-  // 전체 레시피 목록 상태
   const recipes = ref([]);
-  // 현재 선택된 레시피 상태
   const currentRecipe = ref(null);
+  const isInitialized = ref(false);
 
   // 예시 데이터 (개발용)
   const sampleRecipes = [
     {
-      name: '계란말이',
+      name: '[DEV] 계란말이',
       content: [
         '1. 계란을 그릇에 풀어 우유와 함께 섞는다.',
         '2. 당근을 잘게 다진다.',
@@ -70,16 +71,16 @@ export const useRecipeStore = defineStore('recipe', () => {
     },
   ];
 
-  // Computed 속성
   const recipeList = computed(() => {
-    if (!recipes.value.length)
-      return sampleRecipes.map((recipe, index) => ({
-        ...recipe,
-        id: index + 1,
-        icon: getRecipeIcon(recipe.name),
-      }));
+    // recipes.value가 배열이 아닌 경우 빈 배열로 초기화
+    if (!Array.isArray(recipes.value)) {
+      recipes.value = [];
+    }
 
-    return recipes.value.map((recipe, index) => ({
+    // 데이터가 없을 경우 예시 데이터 사용
+    const sourceData = recipes.value.length > 0 ? recipes.value : sampleRecipes;
+
+    return sourceData.map((recipe, index) => ({
       ...recipe,
       id: index + 1,
       icon: getRecipeIcon(recipe.name),
@@ -96,23 +97,18 @@ export const useRecipeStore = defineStore('recipe', () => {
     }));
   });
 
-  const cookingSteps = computed(() => {
-    if (!currentRecipe.value) return [];
+  const getRecipes = async () => {
+    // 이미 초기화되었다면 API 호출하지 않음
+    if (isInitialized.value) return;
 
-    return currentRecipe.value.content.map((text, index) => ({
-      id: index + 1,
-      text,
-    }));
-  });
-
-  const fetchRecipes = async () => {
     try {
-      const response = await fetch('/api/recipes');
-      const data = await response.json();
-      recipes.value = data;
+      const response = await axios.get(`${API_BASE_URL}/recipes`);
+      recipes.value = Array.isArray(response.data) ? response.data : [];
+      isInitialized.value = true;
+      console.log(recipes.value);
     } catch (error) {
       console.error('레시피 목록을 가져오는데 실패했습니다:', error);
-      recipes.value = sampleRecipes;
+      recipes.value = [];
     }
   };
 
@@ -123,11 +119,10 @@ export const useRecipeStore = defineStore('recipe', () => {
   };
 
   return {
-    recipes: recipeList,
+    recipeList,
     currentRecipe,
     ingredients,
-    cookingSteps,
-    fetchRecipes,
+    getRecipes,
     setCurrentRecipe,
   };
 });

@@ -1,5 +1,6 @@
 <template>
   <div class="recipe-detail">
+    <!-- 헤더 -->
     <header class="recipe-detail__header">
       <button
         class="recipe-detail__back-btn"
@@ -22,7 +23,7 @@
           class="recipe-detail__image"
         />
       </div>
-      <!-- 요리 정보 -->
+      <!-- 요리 간략 정보 -->
       <CardTemplate>
         <div class="recipe-info">
           <span class="recipe-info__item"
@@ -55,12 +56,11 @@
         <h2 class="section-title">조리 순서</h2>
         <div class="cooking-steps">
           <CategoryCard
-            v-for="(step, index) in recipeStore.cookingSteps"
-            :key="step.id"
+            v-for="step in recipeStore.currentRecipe?.content"
+            :key="step"
           >
             <div class="cooking-steps__item">
-              <span class="cooking-steps__number">{{ index + 1 }}.</span>
-              <span class="cooking-steps__text">{{ step.text }}</span>
+              <span class="cooking-steps__text">{{ step }}</span>
             </div>
           </CategoryCard>
         </div>
@@ -86,7 +86,6 @@ const goBack = () => {
 };
 
 onMounted(async () => {
-  await recipeStore.fetchRecipes();
   const recipeName = route.params.id;
   recipeStore.setCurrentRecipe(recipeName);
 });
@@ -100,7 +99,7 @@ $spacing-md: 16px;
 $border-radius-lg: 16px;
 $border-radius-sm: 8px;
 
-// 레시피 상세 페이지 컨테이너
+// 레시피 상세 페이지 기본 레이아웃
 .recipe-detail {
   display: flex;
   flex-direction: column;
@@ -109,6 +108,7 @@ $border-radius-sm: 8px;
   background-color: $color-white-000;
   font-family: 'Noto Sans KR', sans-serif;
 
+  // 헤더 섹션
   &__header {
     position: fixed;
     top: 0;
@@ -139,6 +139,7 @@ $border-radius-sm: 8px;
     }
   }
 
+  // 헤더 섹션 중 요리 이름
   &__heading {
     font-size: 24px;
     font-weight: 700;
@@ -242,12 +243,6 @@ $border-radius-sm: 8px;
     display: flex;
     align-items: flex-start;
     gap: $spacing-sm;
-  }
-
-  &__number {
-    font-weight: 600;
-    color: $color-gray-700;
-    min-width: 24px;
   }
 
   &__text {
