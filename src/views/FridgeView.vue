@@ -17,6 +17,21 @@
       </button>
     </div>
 
+    <!-- 냉장고 온도 제어 섹션 -->
+    <CardTemplate class="temperature">
+      <div class="temperature__control">
+        <div class="temperature__icon-label">
+          <i class="fas fa-thermometer-half"></i>
+          <span>Temperature</span>
+        </div>
+        <div class="temperature__controls">
+          <button class="temperature__btn" @click="decreaseTemp">-</button>
+          <span class="temperature__value">{{ temperature }}°C</span>
+          <button class="temperature__btn" @click="increaseTemp">+</button>
+        </div>
+      </div>
+    </CardTemplate>
+
     <!-- 냉장고 재료 섹션 -->
     <CardTemplate class="storage-section">
       <div class="ingredients">
