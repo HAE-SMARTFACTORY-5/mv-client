@@ -257,13 +257,12 @@ const serviceItems = [
 }
 
 .section {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 
   &__header {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 10px;
 
     &-link {
       font-size: 12px;
