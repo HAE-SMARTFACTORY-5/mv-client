@@ -143,10 +143,6 @@ onMounted(async () => {
       border-color: $color-black-700;
       color: $color-black-700;
     }
-
-    &:hover {
-      border-color: $color-black-700;
-    }
   }
 }
 
