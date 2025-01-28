@@ -9,12 +9,15 @@
       >
         <i class="fa-solid fa-arrow-left"></i>
       </button>
-      <i v-if="icon" :class="icon" class="me-2"></i>
-      <h1 class="base-template__heading">
-        <slot name="header-title">{{ title }}</slot>
-      </h1>
+      <div class="base-template__header-text">
+        <i v-if="icon" :class="icon" class="me-2"></i>
+        <h1 class="base-template__heading">
+          <slot name="header-title">{{ title }}</slot>
+        </h1>
+      </div>
     </header>
 
+    <hr class="section-divider" />
     <main class="base-template__content">
       <slot></slot>
     </main>
@@ -43,6 +46,13 @@ defineEmits(['back']);
 $header-height: 60px;
 $spacing-md: 16px;
 
+.section-divider {
+  width: 100%;
+  border: 0;
+  height: 1px;
+  background-color: $color-black-700;
+}
+
 .base-template {
   display: flex;
   flex-direction: column;
@@ -55,18 +65,23 @@ $spacing-md: 16px;
     @include flex-basic;
     height: 60px;
     padding: 0 16px;
-    background-color: $color-blue-500;
-    color: $color-white-000;
-    font-size: 24px;
-    font-weight: 700;
-    font-family: 'Noto Sans KR';
+
+    &-text {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      color: $color-black-700;
+      font-size: 20px;
+      font-weight: 700;
+      font-family: 'Noto Sans KR';
+    }
   }
 
   &__back-btn {
     background: none;
     border: none;
-    color: $color-white-000;
-    font-size: 24px;
+    color: $color-black-700;
+    font-size: 20px;
     cursor: pointer;
     padding: 0;
     margin-right: $spacing-md;
@@ -78,7 +93,7 @@ $spacing-md: 16px;
   }
 
   &__heading {
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 700;
     margin: 0;
   }
@@ -90,7 +105,7 @@ $spacing-md: 16px;
     flex-grow: 1;
     padding: 16px;
     width: 100%;
-    background-color: $color-white-000;
+    background-color: $color-white-200;
     font-family: 'Noto Sans KR', sans-serif;
   }
 }

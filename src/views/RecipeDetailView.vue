@@ -87,6 +87,12 @@ $spacing-md: 16px;
 $border-radius-lg: 16px;
 $border-radius-sm: 8px;
 
+.recipe-info {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
 .image {
   &-wrapper {
     @include flex-center;
