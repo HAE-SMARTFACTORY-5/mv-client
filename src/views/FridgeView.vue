@@ -1,5 +1,10 @@
 <template>
-  <BaseTemplate title="오늘의 요리" icon="fa-solid fa-utensils">
+  <BaseTemplate
+    title="오늘의 요리"
+    icon="fa-solid fa-utensils"
+    :show-back-button="true"
+    @back="goBack"
+  >
     <div class="storage-tabs">
       <button
         class="storage-tabs__btn"
@@ -16,21 +21,6 @@
         냉동실
       </button>
     </div>
-
-    <!-- 냉장고 온도 제어 섹션 -->
-    <CardTemplate class="temperature">
-      <div class="temperature__control">
-        <div class="temperature__icon-label">
-          <i class="fas fa-thermometer-half"></i>
-          <span>Temperature</span>
-        </div>
-        <div class="temperature__controls">
-          <button class="temperature__btn" @click="decreaseTemp">-</button>
-          <span class="temperature__value">{{ temperature }}°C</span>
-          <button class="temperature__btn" @click="increaseTemp">+</button>
-        </div>
-      </div>
-    </CardTemplate>
 
     <!-- 냉장고 재료 섹션 -->
     <CardTemplate class="storage-section">
@@ -55,10 +45,11 @@
     <CardTemplate class="recipe-section">
       <div class="section-header">
         <h2 class="section-title">
-          <i class="fa-solid fa-star me-2"></i>
+          <i class="fa-solid fa-book me-2"></i>
           추천 레시피
         </h2>
       </div>
+      <hr class="section-divider" />
       <div class="recipes-list">
         <CategoryCard
           v-for="recipe in recipes"
@@ -75,7 +66,7 @@
             </div>
           </div>
           <button
-            class="btn btn-primary px-2"
+            class="btn category__content__btn"
             @click="router.push(`/recipe/${recipe.name}`)"
           >
             레시피
@@ -99,6 +90,11 @@ const router = useRouter();
 const recipeStore = useRecipeStore();
 const fridgeStore = useFridgeStore();
 const activeStorage = ref('fridge');
+
+// goBack 함수 추가
+const goBack = () => {
+  router.back();
+};
 
 // 백엔드에서 냉동고 API 추가 후 삭제
 const freezerIngredients = [
@@ -143,13 +139,9 @@ onMounted(async () => {
     transition: all 0.2s ease;
 
     &.active {
-      background-color: $color-blue-500;
-      border-color: $color-blue-500;
-      color: $color-white-000;
-    }
-
-    &:hover {
-      border-color: $color-blue-500;
+      background-color: $color-white-000;
+      border-color: $color-black-700;
+      color: $color-black-700;
     }
   }
 }
@@ -168,7 +160,7 @@ onMounted(async () => {
 
   &__link {
     cursor: pointer;
-    color: $color-blue-700;
+    color: $color-gray-700;
   }
 }
 
@@ -191,6 +183,12 @@ onMounted(async () => {
   &__content {
     display: flex;
     flex-direction: column;
+
+    &__btn {
+      margin-right: 10px;
+      padding: 4px 8px;
+      background-color: $color-gray-200;
+    }
   }
 
   &__title {
@@ -215,6 +213,7 @@ onMounted(async () => {
 
   &__card {
     flex-shrink: 0;
+    background-color: $color-white-000;
   }
 }
 
@@ -261,7 +260,17 @@ onMounted(async () => {
   color: $color-gray-600;
 
   i {
-    color: $color-blue-500;
+    margin-top: 5px;
+    color: $color-gray-700;
   }
+}
+
+// 섹션 구분선 스타일
+.section-divider {
+  width: 100%;
+  border: 0;
+  height: 0.5px;
+  background-color: $color-gray-500;
+  margin: 0 0 16px 0;
 }
 </style>

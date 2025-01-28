@@ -6,8 +6,8 @@
   >
     <div class="image-wrapper">
       <img
-        src="@assets/images/chicken_omlet.jpg"
-        alt="닭가슴살 오믈렛 이미지"
+        src="@assets/images/사과 바나나 스무디.png"
+        alt="사과 바나나 스무디 이미지"
         loading="lazy"
         class="image-content"
       />
@@ -86,6 +86,12 @@ $spacing-sm: 8px;
 $spacing-md: 16px;
 $border-radius-lg: 16px;
 $border-radius-sm: 8px;
+
+.recipe-info {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
 
 .image {
   &-wrapper {

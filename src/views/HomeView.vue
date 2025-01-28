@@ -73,7 +73,11 @@
           >
             <div class="card__header">
               <i :class="item.icon" class="card__header-icon"></i>
-              <button v-if="item.button" class="card__header-button">
+              <button
+                v-if="item.button"
+                class="card__header-button"
+                @click="item.path && router.push(item.path)"
+              >
                 {{ item.button }}
               </button>
               <span v-if="item.info" class="card__header-info">{{
@@ -113,6 +117,9 @@
 
 <script setup>
 import CategoryCard from '@/components/molecules/CategoryCard.vue';
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
 
 const controlItems = [
   {
@@ -150,14 +157,15 @@ const serviceItems = [
   },
   {
     id: 2,
-    name: '냉장고',
-    icon: 'fa-regular fa-snowflake',
-    info: '2/12',
+    name: '메뉴추천',
+    icon: 'fa-solid fa-utensils',
+    button: '메뉴',
+    path: '/fridge',
   },
   {
     id: 3,
-    name: '에어컨',
-    icon: 'fa-solid fa-wind',
+    name: '홈캠',
+    icon: 'fa-solid fa-camera',
     info: '2/12',
   },
   {
@@ -221,7 +229,7 @@ const serviceItems = [
   position: absolute;
   top: 20px;
   left: 20px;
-  color: white;
+  color: $color-white-000;
   z-index: 2;
 
   &__temperature {
@@ -257,13 +265,13 @@ const serviceItems = [
 }
 
 .section {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  font-family: 'Noto Sans KR';
 
   &__header {
     display: flex;
     justify-content: space-between;
     align-items: flex-end;
-    margin-bottom: 10px;
 
     &-link {
       font-size: 12px;
@@ -288,6 +296,7 @@ const serviceItems = [
 .card {
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   min-width: 120px;
   height: 90px;
   padding: 15px;
@@ -352,7 +361,7 @@ const serviceItems = [
   width: 100%;
   display: flex;
   justify-content: space-around;
-  background-color: white;
+  background-color: $color-white-000;
   padding: 10px 0;
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
