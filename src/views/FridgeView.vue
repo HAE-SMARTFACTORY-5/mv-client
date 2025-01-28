@@ -1,87 +1,94 @@
 <template>
-  <div class="base-layout">
-    <!-- 헤더 -->
-    <header class="base-layout__header">
-      <i class="fa-solid fa-utensils me-2"></i>
-      오늘의 요리
-    </header>
+  <BaseTemplate title="오늘의 요리" icon="fa-solid fa-utensils">
+    <div class="storage-tabs">
+      <button
+        class="storage-tabs__btn"
+        :class="{ active: activeStorage === 'fridge' }"
+        @click="activeStorage = 'fridge'"
+      >
+        냉장실
+      </button>
+      <button
+        class="storage-tabs__btn"
+        :class="{ active: activeStorage === 'freezer' }"
+        @click="activeStorage = 'freezer'"
+      >
+        냉동실
+      </button>
+    </div>
 
-    <!-- 메인 컨테이너 -->
-    <main class="base-layout__container">
-      <div class="storage-tabs">
-        <button
-          class="storage-tabs__btn"
-          :class="{ active: activeStorage === 'fridge' }"
-          @click="activeStorage = 'fridge'"
-        >
-          냉장실
-        </button>
-        <button
-          class="storage-tabs__btn"
-          :class="{ active: activeStorage === 'freezer' }"
-          @click="activeStorage = 'freezer'"
-        >
-          냉동실
-        </button>
+    <!-- 냉장고 온도 제어 섹션 -->
+    <CardTemplate class="temperature">
+      <div class="temperature__control">
+        <div class="temperature__icon-label">
+          <i class="fas fa-thermometer-half"></i>
+          <span>Temperature</span>
+        </div>
+        <div class="temperature__controls">
+          <button class="temperature__btn" @click="decreaseTemp">-</button>
+          <span class="temperature__value">{{ temperature }}°C</span>
+          <button class="temperature__btn" @click="increaseTemp">+</button>
+        </div>
       </div>
+    </CardTemplate>
 
-      <!-- 냉장고 재료 섹션 -->
-      <CardTemplate class="storage-section">
-        <div class="ingredients">
-          <CategoryCard
-            v-for="(ingredient, index) in currentIngredients"
-            :key="`ingredient-${index}`"
-            class="ingredients__card"
-          >
-            <div class="category">
-              <div class="category__icon">{{ ingredient.icon }}</div>
-              <div class="category__content">
-                <span class="category__title">{{ ingredient.name }}</span>
-                <span class="category__subtitle">{{ ingredient.count }}</span>
-              </div>
+    <!-- 냉장고 재료 섹션 -->
+    <CardTemplate class="storage-section">
+      <div class="ingredients">
+        <CategoryCard
+          v-for="(ingredient, index) in currentIngredients"
+          :key="`ingredient-${index}`"
+          class="ingredients__card"
+        >
+          <div class="category">
+            <div class="category__icon">{{ ingredient.icon }}</div>
+            <div class="category__content">
+              <span class="category__title">{{ ingredient.name }}</span>
+              <span class="category__subtitle">{{ ingredient.count }}</span>
             </div>
-          </CategoryCard>
-        </div>
-      </CardTemplate>
+          </div>
+        </CategoryCard>
+      </div>
+    </CardTemplate>
 
-      <!-- 추천 레시피 섹션 -->
-      <CardTemplate class="recipe-section">
-        <div class="section-header">
-          <h2 class="section-title">
-            <i class="fa-solid fa-star me-2"></i>
-            추천 레시피
-          </h2>
-        </div>
-        <div class="recipes-list">
-          <CategoryCard
-            v-for="recipe in recipes"
-            :key="`recipe-${recipe.id}`"
-            class="recipes-list__card"
-          >
-            <div class="category">
-              <div class="category__icon">{{ recipe.icon }}</div>
-              <div class="category__content">
-                <span class="category__title">{{ recipe.name }}</span>
-                <span class="category__subtitle">
-                  {{ recipe.level }} {{ recipe.time }}
-                </span>
-              </div>
+    <!-- 추천 레시피 섹션 -->
+    <CardTemplate class="recipe-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fa-solid fa-star me-2"></i>
+          추천 레시피
+        </h2>
+      </div>
+      <div class="recipes-list">
+        <CategoryCard
+          v-for="recipe in recipes"
+          :key="`recipe-${recipe.id}`"
+          class="recipes-list__card"
+        >
+          <div class="category">
+            <div class="category__icon">{{ recipe.icon }}</div>
+            <div class="category__content">
+              <span class="category__title">{{ recipe.name }}</span>
+              <span class="category__subtitle">
+                {{ recipe.level }} {{ recipe.time }}
+              </span>
             </div>
-            <button
-              class="btn btn-primary px-2"
-              @click="router.push(`/recipe/${recipe.name}`)"
-            >
-              레시피
-            </button>
-          </CategoryCard>
-        </div>
-      </CardTemplate>
-    </main>
-  </div>
+          </div>
+          <button
+            class="btn btn-primary px-2"
+            @click="router.push(`/recipe/${recipe.name}`)"
+          >
+            레시피
+          </button>
+        </CategoryCard>
+      </div>
+    </CardTemplate>
+  </BaseTemplate>
 </template>
 
 <script setup>
-import CardTemplate from '@components/templates/CardTemplate.vue';
+import BaseTemplate from '@components/templates/BaseTemplate.vue';
+import CardTemplate from '@components/molecules/CardTemplate.vue';
 import CategoryCard from '@components/molecules/CategoryCard.vue';
 import { useRouter } from 'vue-router';
 import { ref, computed, onMounted } from 'vue';
@@ -117,34 +124,6 @@ onMounted(async () => {
 </script>
 
 <style lang="scss" scoped>
-// 기본 레이아웃
-.base-layout {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  min-height: 100vh;
-  background-color: $color-white-000;
-
-  &__header {
-    @include flex-basic;
-    height: 60px;
-    padding: 0 16px;
-    background-color: $color-blue-500;
-    color: $color-white-000;
-    font-size: 24px;
-    font-weight: 700;
-    font-family: 'Noto Sans KR';
-  }
-
-  &__container {
-    @include flex-basic;
-    flex-direction: column;
-    padding: 16px;
-    height: calc(100vh - 60px);
-  }
-}
-
 // 저장소 탭
 .storage-tabs {
   display: flex;
@@ -266,7 +245,7 @@ onMounted(async () => {
 .recipe-section {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex-grow: 1;
   min-height: 0;
   height: 100%;
 }
