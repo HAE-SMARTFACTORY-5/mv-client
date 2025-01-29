@@ -13,9 +13,9 @@
   align-items: flex-start;
 
   width: 100%;
-  background-color: $color-gray-200;
+  // background-color: $color-gray-200;
   // background-color: $color-white-000;
-  // background-color: $color-error-050;
+  background-color: $color-error-100;
 
   border-radius: 8px;
   margin: 8px 0;

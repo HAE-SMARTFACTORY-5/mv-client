@@ -187,7 +187,7 @@ onMounted(async () => {
     &__btn {
       margin-right: 10px;
       padding: 4px 8px;
-      background-color: $color-gray-200;
+      background-color: $color-error-050;
     }
   }
 
