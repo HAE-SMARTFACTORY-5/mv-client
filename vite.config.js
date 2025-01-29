@@ -31,4 +31,8 @@ export default defineConfig({
       },
     },
   },
+  server: {
+    host: '0.0.0.0', // 이 부분이 꼭 필요합니다
+    port: 5173,
+  },
 });
