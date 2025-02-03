@@ -105,7 +105,7 @@ $spacing-md: 16px;
     flex-grow: 1;
     padding: 16px;
     width: 100%;
-    background-color: $color-white-200;
+    background-color: $color-error-050;
     font-family: 'Noto Sans KR', sans-serif;
   }
 }
